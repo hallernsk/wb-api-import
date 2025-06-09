@@ -3,26 +3,22 @@
 namespace App\Services;
 
 use App\Models\Sale;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
-class SaleImportService
+class SaleImportService extends BaseApiService
 {
-    protected string $baseUrl = 'http://109.73.206.144:6969/api/sales';
-    protected string $apiKey = 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie';
-
     public function import(string $dateFrom, string $dateTo): int
     {
         Sale::truncate();
+        
         $page = 1;
         $limit = 500;
         $importedCount = 0;
 
         try {
             while (true) {
-                $response = Http::get($this->baseUrl, [
-                    'key' => $this->apiKey,
+                $response = $this->makeRequest('/sales', [
                     'dateFrom' => $dateFrom,
                     'dateTo' => $dateTo,
                     'page' => $page,
@@ -41,7 +37,7 @@ class SaleImportService
                 $data = $response->json('data');
 
                 foreach ($data as $item) {
-                    Sale::create([      
+                    Sale::create([
                         'g_number' => $item['g_number'],
                         'date' => $item['date'],
                         'last_change_date' => $item['last_change_date'],
@@ -73,13 +69,10 @@ class SaleImportService
                     $importedCount++;
                 }
 
-                if (count($data) < $limit) {
-                    break;
-                }
+                if (count($data) < $limit) break;
 
                 $page++;
             }
-
         } catch (Exception $e) {
             Log::error('Ошибка при импорте продаж: ' . $e->getMessage(), [
                 'exception' => $e,

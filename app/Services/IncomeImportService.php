@@ -3,15 +3,11 @@
 namespace App\Services;
 
 use App\Models\Income;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
-class IncomeImportService
+class IncomeImportService extends BaseApiService
 {
-    protected string $baseUrl = 'http://109.73.206.144:6969/api/incomes';
-    protected string $apiKey = 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie';
-
     public function import(string $dateFrom, string $dateTo): int
     {
         Income::truncate();
@@ -22,8 +18,7 @@ class IncomeImportService
 
         try {
             while (true) {
-                $response = Http::get($this->baseUrl, [
-                    'key' => $this->apiKey,
+                $response = $this->makeRequest('/incomes', [
                     'dateFrom' => $dateFrom,
                     'dateTo' => $dateTo,
                     'page' => $page,
@@ -56,17 +51,13 @@ class IncomeImportService
                         'warehouse_name' => $item['warehouse_name'],
                         'nm_id' => $item['nm_id'],
                     ]);
-
                     $importedCount++;
                 }
 
-                if (count($data) < $limit) {
-                    break;
-                }                
+                if (count($data) < $limit) break;
 
                 $page++;
             }
-
         } catch (Exception $e) {
             Log::error('Ошибка при импорте доходов: ' . $e->getMessage(), [
                 'exception' => $e,

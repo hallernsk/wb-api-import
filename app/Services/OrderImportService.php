@@ -3,26 +3,22 @@
 namespace App\Services;
 
 use App\Models\Order;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
-class OrderImportService
+class OrderImportService extends BaseApiService
 {
-    protected string $baseUrl = 'http://109.73.206.144:6969/api/orders';
-    protected string $apiKey = 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie';
-
     public function import(string $dateFrom, string $dateTo): int
     {
         Order::truncate();
+
         $page = 1;
-        $limit = 500;   // Максимальное количество заказов в одном запросе
+        $limit = 500;
         $importedCount = 0;
 
         try {
             while (true) {
-                $response = Http::get($this->baseUrl, [
-                    'key' => $this->apiKey,
+                $response = $this->makeRequest('/orders', [
                     'dateFrom' => $dateFrom,
                     'dateTo' => $dateTo,
                     'page' => $page,
@@ -39,10 +35,6 @@ class OrderImportService
                 }
 
                 $data = $response->json('data');
-
-                // if (empty($data)) {
-                //     break;
-                // }
 
                 foreach ($data as $item) {
                     Order::create([
@@ -65,17 +57,13 @@ class OrderImportService
                         'is_cancel' => $item['is_cancel'],
                         'cancel_dt' => $item['cancel_dt'],
                     ]);
-                    
                     $importedCount++;
                 }
 
-                if (count($data) < $limit) {
-                    break;
-                }
+                if (count($data) < $limit) break;
 
                 $page++;
             }
-
         } catch (Exception $e) {
             Log::error('Ошибка при импорте заказов: ' . $e->getMessage(), [
                 'exception' => $e,

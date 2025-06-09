@@ -3,33 +3,29 @@
 namespace App\Services;
 
 use App\Models\Stock;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
-class StockImportService
+class StockImportService extends BaseApiService
 {
-    protected string $baseUrl = 'http://109.73.206.144:6969/api/stocks';
-    protected string $apiKey = 'E6kUTYrYwZq2tN4QEtyzsbEBk3ie';
-
     public function import(string $date): int
     {
         Stock::truncate();
+
         $page = 1;
         $limit = 500;
         $importedCount = 0;
 
         try {
             while (true) {
-                $response = Http::get($this->baseUrl, [
-                    'key' => $this->apiKey,
+                $response = $this->makeRequest('/stocks', [
                     'dateFrom' => $date,
                     'page' => $page,
                     'limit' => $limit,
                 ]);
 
                 if ($response->failed()) {
-                    Log::error('Ошибка при получении складов', [
+                    Log::error('Ошибка при получении остатков', [
                         'status' => $response->status(),
                         'body' => $response->body(),
                         'page' => $page,
@@ -64,15 +60,12 @@ class StockImportService
                     $importedCount++;
                 }
 
-                if (count($data) < $limit) {
-                    break;
-                }
+                if (count($data) < $limit) break;
 
                 $page++;
             }
-
         } catch (Exception $e) {
-            Log::error('Ошибка при импорте складов: ' . $e->getMessage(), [
+            Log::error('Ошибка при импорте остатков: ' . $e->getMessage(), [
                 'exception' => $e,
                 'page' => $page,
             ]);
