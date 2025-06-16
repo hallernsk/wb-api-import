@@ -37,17 +37,17 @@ import:sales 2025-06-06 2025-06-07
 
 import:incomes 2025-06-01 2025-06-07    
 
-import:stocks 2025-06-08    
+import:stocks 2025-06-16    
   
     
 
 ### Доступ к базе данных:
 
-Хост:         sql7.freesqldatabase.com  
+Хост:         sql12.freesqldatabase.com  
 Порт:         3306  
-Имя БД:       sql7783554    
-Пользователь: sql7783554    
-Пароль:       q1aKbE9CGq    
+Имя БД:       sql12784997    
+Пользователь: sql12784997    
+Пароль:       LsAtg6R7ye    
 
 Для phpmyadmin:  
 http://www.phpmyadmin.co  
