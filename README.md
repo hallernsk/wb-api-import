@@ -44,7 +44,7 @@ import:stocks 2025-06-20
 ### Доступ к базе данных:
 
 Хост:         mysql-wb-api-import.h.aivencloud.com  
-Порт:         14136
+Порт:         14136  
 Имя БД:       defaultdb    
 Пользователь: avnadmin    
 Пароль:       AVNS_f5CS1tVQRmVXiT9KPb5    
