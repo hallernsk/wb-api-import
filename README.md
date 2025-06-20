@@ -37,24 +37,17 @@ import:sales 2025-06-06 2025-06-07
 
 import:incomes 2025-06-01 2025-06-07    
 
-import:stocks 2025-06-16    
+import:stocks 2025-06-20    
   
     
 
 ### Доступ к базе данных:
 
-Хост:         sql12.freesqldatabase.com  
-Порт:         3306  
-Имя БД:       sql12784997    
-Пользователь: sql12784997    
-Пароль:       LsAtg6R7ye    
-
-Для phpmyadmin:  
-http://www.phpmyadmin.co  
-
-
-
-
+Хост:         mysql-wb-api-import.h.aivencloud.com  
+Порт:         14136
+Имя БД:       defaultdb    
+Пользователь: avnadmin    
+Пароль:       AVNS_f5CS1tVQRmVXiT9KPb5    
 
 
 
